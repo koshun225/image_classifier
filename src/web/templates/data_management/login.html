@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}ログイン - 画像分類データ管理{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <div class="login-box">
+        <h1>ログイン</h1>
+        <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            {% if form.errors %}
+            <div class="error-message">
+                ユーザー名またはパスワードが正しくありません。
+            </div>
+            {% endif %}
+            <div class="form-group">
+                <label for="id_username">ユーザー名</label>
+                {{ form.username }}
+            </div>
+            <div class="form-group">
+                <label for="id_password">パスワード</label>
+                {{ form.password }}
+            </div>
+            <button type="submit" class="btn btn-primary">ログイン</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,103 @@
+image:
+  size: None
+  mean:
+  - 0.485
+  - 0.456
+  - 0.406
+  std:
+  - 0.229
+  - 0.224
+  - 0.225
+train:
+  resize:
+    enabled: false
+    height: 256
+    width: 256
+  random_crop:
+    enabled: false
+    height: 224
+    width: 224
+  horizontal_flip:
+    enabled: false
+    p: 0.5
+  vertical_flip:
+    enabled: false
+    p: 0.5
+  rotate:
+    enabled: true
+    limit: 20
+    p: 0.5
+  color_jitter:
+    enabled: true
+    brightness: 0.2
+    contrast: 0.2
+    saturation: 0.2
+    hue: 0.1
+    p: 0.5
+  gaussian_blur:
+    enabled: false
+    blur_limit:
+    - 3
+    - 7
+    p: 0.3
+  random_erasing:
+    enabled: false
+    p: 0.3
+    scale:
+    - 0.02
+    - 0.33
+    ratio:
+    - 0.3
+    - 3.3
+  cutout:
+    enabled: false
+    num_holes: 1
+    max_h_size: 32
+    max_w_size: 32
+    p: 0.5
+  normalize:
+    enabled: true
+val:
+  resize:
+    enabled: false
+    height: 256
+    width: 256
+  center_crop:
+    enabled: false
+    height: 224
+    width: 224
+  normalize:
+    enabled: true
+test:
+  resize:
+    enabled: false
+    height: 256
+    width: 256
+  center_crop:
+    enabled: false
+    height: 224
+    width: 224
+  normalize:
+    enabled: true
+preprocessing:
+  histogram_equalization:
+    enabled: true
+    method: clahe
+    clahe:
+      clip_limit: 2
+      tile_grid_size:
+      - 8
+      - 8
+  gamma_correction:
+    enabled: true
+    gamma: 2
+  patching:
+    enabled: false
+    patch_size:
+    - 14
+    - 14
+    stride:
+    - 7
+    - 7
+    padding: true
+library: albumentations

@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ theme.name }} - モデル開発{% endblock %}
+
+{% block content %}
+<div class="model-development-container">
+    <div class="page-header">
+        <h1>{{ theme.name }} - モデル開発</h1>
+        <a href="{% url 'theme_detail' theme.id %}" class="btn btn-secondary">← 画像一覧に戻る</a>
+    </div>
+    
+    <div class="model-development-content">
+        <!-- 登録済みモデル選択セクション -->
+        <div class="registered-model-section" style="margin-bottom: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 5px;">
+            <h3>登録済みモデルから選択</h3>
+            <div class="form-group">
+                <label for="registered-model-select">モデルを選択:</label>
+                <select id="registered-model-select" class="form-control" style="max-width: 500px;">
+                    <option value="">-- モデルを選択してください --</option>
+                </select>
+                <small class="form-text text-muted">モデルを選択すると、そのモデルのパラメータが適用され、初期重みとして使用されます。</small>
+            </div>
+        </div>
+        
+        <!-- パラメータ編集セクション -->
+        <div class="params-section">
+            <div class="params-tabs">
+                <button class="tab-btn active" data-tab="params">params.yaml</button>
+                <button class="tab-btn" data-tab="auguments">auguments.yaml</button>
+            </div>
+            
+            <div class="tab-content active" id="params-tab">
+                <div class="optuna-settings">
+                    <h2>Optuna設定</h2>
+                    <div class="optuna-grid" id="optuna-form">
+                        <div class="form-group">
+                            <label for="optuna-metric">評価メトリクス</label>
+                            <input type="text" id="optuna-metric" class="form-control" placeholder="test_acc">
+                        </div>
+                        <div class="form-group">
+                            <label for="optuna-direction">方向</label>
+                            <select id="optuna-direction" class="form-control">
+                                <option value="maximize">maximize</option>
+                                <option value="minimize">minimize</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="optuna-ntrials">試行回数 (n_trials)</label>
+                            <input type="number" id="optuna-ntrials" class="form-control" min="1" step="1" placeholder="例: 20">
+                        </div>
+                        <div class="form-group">
+                            <label for="optuna-timeout">タイムアウト (秒)</label>
+                            <input type="number" id="optuna-timeout" class="form-control" min="0" step="60" placeholder="例: 3600">
+                        </div>
+                    </div>
+                </div>
+                <div class="params-helper">
+                    <p>各パラメータの値を直接編集できます。チューニングしたい項目はトグルを有効にし、種類や範囲を設定してください。</p>
+                </div>
+                <div id="params-form" class="params-form"></div>
+            </div>
+            
+            <div class="tab-content" id="auguments-tab">
+                <div class="auguments-helper">
+                    <p>各augmentation/前処理の有効/無効を切り替え、パラメータを設定できます。</p>
+                </div>
+                <div id="auguments-form" class="auguments-form"></div>
+            </div>
+        </div>
+        
+        <!-- プレビューセクション -->
+        <div class="preview-section">
+            <h2>プレビュー</h2>
+            <div class="preview-controls">
+                <button id="preview-preprocessing-btn" class="btn btn-secondary">前処理プレビュー</button>
+                <button id="preview-augmentation-btn" class="btn btn-secondary">Augmentationプレビュー</button>
+            </div>
+            
+            <div id="preview-preprocessing" class="preview-area" style="display: none;">
+                <h3>前処理プレビュー</h3>
+                <div id="preprocessing-images" class="preview-images"></div>
+            </div>
+            
+            <div id="preview-augmentation" class="preview-area" style="display: none;">
+                <h3>Augmentationプレビュー</h3>
+                <div id="augmentation-images" class="preview-images"></div>
+            </div>
+        </div>
+        
+        <!-- アクションボタン -->
+        <div class="action-buttons">
+            <button id="save-params-btn" class="btn btn-primary">保存</button>
+            <button id="start-training-btn" class="btn btn-success">開発開始</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const themeId = {{ theme.id }};
+const csrfToken = '{{ csrf_token }}';
+</script>
+<script id="params-data" type="application/json">{{ params_json|safe }}</script>
+<script id="optuna-data" type="application/json">{{ optuna_json|safe }}</script>
+<script id="auguments-data" type="application/json">{{ auguments_json|safe }}</script>
+<script id="available-models-data" type="application/json">{{ available_models|safe }}</script>
+<script id="registered-models-data" type="application/json">{{ registered_models|safe }}</script>
+<script id="selected-model-id-data" type="application/json">{{ selected_model_id|default:""|safe }}</script>
+<script src="{% static 'js/model_development.js' %}"></script>
+{% endblock %}
+

@@ -1,0 +1,16 @@
+data:
+  root_dir: data
+  dvc_managed:
+  - data
+  - artifacts
+artifacts:
+  preprocessed_dir: artifacts/preprocessed
+mlflow:
+  tracking_uri: http://127.0.0.1:5001  # MLflow Tracking Serverへ記録
+  experiment_name: classification_with_mlops
+  server:
+    host: 0.0.0.0
+    port: 5001
+logging:
+  level: INFO
+  format: '%(asctime)s [%(levelname)8s] %(message)s'

@@ -1,0 +1,20 @@
+data:
+  theme_id: 7
+model:
+  name: ResNet34
+  num_classes: 10
+optuna:
+  direction: maximize
+  metric: test_acc
+  n_trials: 1
+training:
+  batch_size: 4
+  checkpoint_path: /Users/koshun/projects/classification_with_mlops/experiments/mlruns/1/ea4dfadb65644e16bc9d5bc4a2a65ab9/artifacts/model
+  learning_rate: 1.0e-05
+  num_epochs: 3
+  num_workers: 0
+  optimizer: SGD
+  run_name: optuna_tuning_retrain5
+  scheduler: CosineAnnealingLR
+  scheduler_params:
+    step_size: 10

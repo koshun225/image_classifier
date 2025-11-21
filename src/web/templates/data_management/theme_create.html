@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}テーマ新規作成 - 画像分類データ管理{% endblock %}
+
+{% block content %}
+<div class="theme-create-container">
+    <div class="page-header">
+        <h1>テーマ新規作成</h1>
+        <a href="{% url 'theme_list' %}" class="btn btn-secondary">キャンセル</a>
+    </div>
+    
+    {% if error %}
+    <div class="error-message">{{ error }}</div>
+    {% endif %}
+    
+    <form method="post" action="{% url 'theme_create' %}" class="theme-create-form">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="name">テーマ名 *</label>
+            <input type="text" id="name" name="name" required class="form-control">
+        </div>
+        
+        <div class="form-group">
+            <label for="description">説明</label>
+            <textarea id="description" name="description" rows="3" class="form-control"></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label>ラベル</label>
+            <div id="labels-container">
+                <div class="label-input-group">
+                    <input type="text" name="labels[]" class="form-control label-input" placeholder="ラベル名">
+                    <button type="button" class="btn btn-danger btn-remove-label" style="display: none;">削除</button>
+                </div>
+            </div>
+            <button type="button" id="add-label-btn" class="btn btn-secondary">➕ ラベルを追加</button>
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">作成</button>
+            <a href="{% url 'theme_list' %}" class="btn btn-secondary">キャンセル</a>
+        </div>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const container = document.getElementById('labels-container');
+    const addBtn = document.getElementById('add-label-btn');
+    
+    addBtn.addEventListener('click', function() {
+        const newGroup = document.createElement('div');
+        newGroup.className = 'label-input-group';
+        newGroup.innerHTML = `
+            <input type="text" name="labels[]" class="form-control label-input" placeholder="ラベル名">
+            <button type="button" class="btn btn-danger btn-remove-label">削除</button>
+        `;
+        container.appendChild(newGroup);
+        
+        // 削除ボタンの表示/非表示を更新
+        updateRemoveButtons();
+    });
+    
+    container.addEventListener('click', function(e) {
+        if (e.target.classList.contains('btn-remove-label')) {
+            e.target.closest('.label-input-group').remove();
+            updateRemoveButtons();
+        }
+    });
+    
+    function updateRemoveButtons() {
+        const groups = container.querySelectorAll('.label-input-group');
+        groups.forEach((group, index) => {
+            const btn = group.querySelector('.btn-remove-label');
+            if (groups.length > 1) {
+                btn.style.display = 'inline-block';
+            } else {
+                btn.style.display = 'none';
+            }
+        });
+    }
+    
+    updateRemoveButtons();
+});
+</script>
+{% endblock %}

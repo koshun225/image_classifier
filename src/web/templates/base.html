@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <title>{% block title %}画像分類データ管理{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    {% if user.is_authenticated %}
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="{% url 'theme_list' %}" class="navbar-brand">画像分類データ管理</a>
+            <div class="navbar-menu">
+                <span class="navbar-user">{{ user.username }}</span>
+                <a href="{% url 'logout' %}" class="navbar-logout">ログアウト</a>
+            </div>
+        </div>
+    </nav>
+    {% endif %}
+    
+    <main class="main-content">
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="message message-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        {% block content %}{% endblock %}
+    </main>
+    
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

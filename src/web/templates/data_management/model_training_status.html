@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ theme.name }} - 学習実行中{% endblock %}
+
+{% block content %}
+<div class="training-status-container">
+    <div class="page-header">
+        <h1>{{ theme.name }} - 学習実行中</h1>
+        <a href="{% url 'theme_detail' theme.id %}" class="btn btn-secondary">← 画像一覧に戻る</a>
+    </div>
+    
+    <div class="training-status-content">
+        <!-- ステータス情報 -->
+        <div class="status-panel">
+            <div class="status-item">
+                <span class="status-label">ステータス:</span>
+                <span class="status-value" id="status-value">{{ training_job.get_status_display }}</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">開始時刻:</span>
+                <span class="status-value" id="started-at">
+                    {% if training_job.started_at %}{{ training_job.started_at|date:"Y-m-d H:i:s" }}{% else %}-{% endif %}
+                </span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">完了時刻:</span>
+                <span class="status-value" id="completed-at">
+                    {% if training_job.completed_at %}{{ training_job.completed_at|date:"Y-m-d H:i:s" }}{% else %}-{% endif %}
+                </span>
+            </div>
+        </div>
+        
+        <!-- ログ表示 -->
+        <div class="log-panel">
+            <h2>ログ</h2>
+            <div id="log-content" class="log-content"></div>
+        </div>
+        
+        <!-- アクションボタン -->
+        <div class="action-buttons">
+            <a href="{% url 'model_list' theme.id %}" class="btn btn-primary">モデル一覧へ</a>
+            {% if mlflow_experiment_id %}
+            <a href="{{ mlflow_ui_url }}/#/experiments/{{ mlflow_experiment_id }}" target="_blank" class="btn btn-secondary">MLflowを開く</a>
+            {% if mlflow_run_id %}
+            <a href="{{ mlflow_ui_url }}/#/experiments/{{ mlflow_experiment_id }}/runs/{{ mlflow_run_id }}" target="_blank" class="btn btn-secondary">MLflowで詳細を見る</a>
+            {% endif %}
+            {% else %}
+            <a href="{{ mlflow_ui_url }}" target="_blank" class="btn btn-secondary">MLflowを開く</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const themeId = {{ theme.id }};
+const jobId = {{ training_job.id }};
+const csrfToken = '{{ csrf_token }}';
+</script>
+<script src="{% static 'js/model_training_status.js' %}"></script>
+{% endblock %}

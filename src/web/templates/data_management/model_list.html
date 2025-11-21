@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ theme.name }} - モデル一覧{% endblock %}
+
+{% block content %}
+<div class="model-list-container">
+    <div class="page-header">
+        <h1>{{ theme.name }} - モデル一覧</h1>
+        <a href="{% url 'theme_detail' theme.id %}" class="btn btn-secondary">← 画像一覧に戻る</a>
+        <a href="{% url 'model_development' theme.id %}" class="btn btn-primary">🤖 モデル開発</a>
+    </div>
+    
+    <div class="model-list-content">
+        {% if models %}
+        <table class="model-table">
+            <thead>
+                <tr>
+                    <th>MLflow Run ID</th>
+                    <th>ステータス</th>
+                    <th>最良スコア</th>
+                    <th>作成者</th>
+                    <th>作成日時</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for model in models %}
+                <tr>
+                    <td>{{ model.mlflow_run_id }}</td>
+                    <td>
+                        <span class="status-badge status-{{ model.status }}">{{ model.get_status_display }}</span>
+                    </td>
+                    <td>
+                        {% if model.best_score %}
+                        {{ model.best_score|floatformat:4 }}
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+                    <td>{{ model.created_by|default:"-" }}</td>
+                    <td>{{ model.created_at|date:"Y-m-d H:i" }}</td>
+                    <td>
+                        <div style="display: flex; gap: 0.5rem; align-items: center;">
+                            {% if mlflow_experiment_id and models %}
+                            <a href="{{ mlflow_ui_url }}/#/experiments/{{ mlflow_experiment_id }}/runs/{{ model.mlflow_run_id }}" target="_blank" class="btn btn-sm btn-secondary">MLflowで詳細</a>
+                            {% else %}
+                            <span class="text-muted">登録なし</span>
+                            {% endif %}
+                            {% if model.training_params %}
+                            <a href="{% url 'model_development' theme.id %}?model_id={{ model.id }}" class="btn btn-sm btn-primary">再学習</a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <p>まだ学習済みモデルが登録されていません。</p>
+            <a href="{% url 'model_development' theme.id %}" class="btn btn-primary">モデル開発を開始</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

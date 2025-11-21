@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}テーマ一覧 - 画像分類データ管理{% endblock %}
+
+{% block content %}
+<div class="theme-list-container">
+    <div class="page-header">
+        <h1>テーマ一覧</h1>
+        <a href="{% url 'theme_create' %}" class="btn btn-primary">➕ 新規作成</a>
+    </div>
+    
+    <div class="statistics">
+        <div class="stat-card">
+            <div class="stat-label">テーマ数</div>
+            <div class="stat-value">{{ total_themes }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">総画像数</div>
+            <div class="stat-value">{{ total_images }}</div>
+        </div>
+    </div>
+    
+    <div class="theme-grid">
+        {% for theme in themes %}
+        <div class="theme-card">
+            <h2 class="theme-name">{{ theme.name }}</h2>
+            {% if theme.description %}
+            <p class="theme-description">{{ theme.description }}</p>
+            {% endif %}
+            <div class="theme-stats">
+                <span>ラベル: {{ theme.label_count }}</span>
+                <span>画像: {{ theme.image_count }}</span>
+            </div>
+            <div class="theme-actions">
+                <a href="{% url 'theme_detail' theme.id %}" class="btn btn-secondary">開く</a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <p>テーマがありません。新規作成してください。</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
